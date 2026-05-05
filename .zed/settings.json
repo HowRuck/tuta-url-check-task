@@ -3,8 +3,6 @@
 
     "languages": {
         "TypeScript": {
-            "tab_size": 2,
-
             "language_servers": [
                 "tsgo",
                 "tailwindcss-language-server",
