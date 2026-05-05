@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "useDefineForClassFields": true,
+        "skipLibCheck": true,
+
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+
+        "allowImportingTsExtensions": true,
+        "rewriteRelativeImportExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+
+        "jsx": "preserve",
+        "jsxImportSource": "mithril",
+
+        "paths": {
+            "@features/*": ["./src/features/*"],
+            "@shared/*": ["./src/shared/*"],
+        },
+    },
+    "include": ["src"],
+}

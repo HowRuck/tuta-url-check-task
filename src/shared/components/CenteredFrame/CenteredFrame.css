@@ -1,0 +1,8 @@
+@reference "#app.css";
+
+.centered-frame {
+  @apply flex flex-col;
+  @apply min-h-screen w-full;
+  @apply items-center justify-center;
+  @apply text-center;
+}
