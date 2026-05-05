@@ -5,17 +5,17 @@ import validator from "validator";
  */
 export enum UrlFileType {
     Directory = "DIR",
-    File = "FILE"
+    File = "FILE",
 }
 
 /**
  * Represents a remote check response
  */
 export type RemoteCheckResponse = {
-    url: string,
-    status: number,
-    type: UrlFileType
-}
+    url: string;
+    status: number;
+    type: UrlFileType;
+};
 
 /**
  * Represents a URL and its validation state
@@ -46,7 +46,7 @@ export class UrlModel {
      * Returns whether the URL is valid (both local and remote are valid)
      */
     public get isValid(): boolean {
-        return (this.isLocalValid && this.isRemoteValid)
+        return this.isLocalValid && this.isRemoteValid;
     }
 
     /**
@@ -85,7 +85,7 @@ export class UrlModel {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ url: this.url }),
-                signal: abortSignal
+                signal: abortSignal,
             });
 
             if (!resp.ok) {
@@ -98,7 +98,6 @@ export class UrlModel {
             this.remote = data as RemoteCheckResponse;
             this.error = "";
             this.isRemoteValid = true;
-
         } catch (err: any) {
             if (err.name === "AbortError") throw err;
 

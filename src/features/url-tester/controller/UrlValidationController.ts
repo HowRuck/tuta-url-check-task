@@ -13,13 +13,20 @@ export class UrlValidationController {
     private readonly THROTTLE_MS = 2000;
     private readonly DEBOUNCE_MS = 400;
 
-
     public isRemoteValidating = false;
 
-    public get url() { return this.model.url; }
-    public get error() { return this.model.error }
-    public get isValid() { return this.model.isValid }
-    public get fileType() { return this.model.type }
+    public get url() {
+        return this.model.url;
+    }
+    public get error() {
+        return this.model.error;
+    }
+    public get isValid() {
+        return this.model.isValid;
+    }
+    public get fileType() {
+        return this.model.type;
+    }
 
     /**
      * Handles input events, validating local URL and running remote check if valid
@@ -75,7 +82,7 @@ export class UrlValidationController {
         try {
             await this.model.syncRemoteValidation(this.abortCtl.signal);
         } catch (err: any) {
-            if (err.name === 'AbortError') return;
+            if (err.name === "AbortError") return;
 
             console.error("Remote check failed:", err);
         } finally {
@@ -86,5 +93,4 @@ export class UrlValidationController {
             m.redraw();
         }
     }
-
 }
