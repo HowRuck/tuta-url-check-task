@@ -10,8 +10,8 @@
 
   <br />
 
-  _A simple web application to validate URLs and check their existence using a lightweight frontend and backend setup_
-  
+_A simple web application to validate URLs and check their existence using a lightweight frontend and backend setup_
+
 </div>
 
 <br />
@@ -19,24 +19,26 @@
 > ℹ️ The backend is implemented with FastAPI as it was quick to implement and provides real feedback. It can be replaced with a mocked service if required
 
 > ⚠️ There is an issue with ?DaisyUI? where form validation styles are not applied immediately while typing
+>
 > - **Workaround:** Submit the form, or click outside the input field and then back into it to trigger the correct styling (also working and reacting properly afterward)
 > - This issue only affects input field styling, validation messages are displayed correctly
 > - The same behavior can be observed in the official DaisyUI example: https://daisyui.com/components/input/
 
 ### Run Backend
+
 ```bash
 cd backend-server
 uv run main.py
 ```
 
 ### Run Frontend
+
 ```bash
 pnpm install
 pnpm dev
 ```
 
 Open http://localhost:3000
-
 
 ### Technologies
 
@@ -54,5 +56,5 @@ Open http://localhost:3000
 1. **User Input:** User can enter a URL into an input field
 2. **URL Validation:** Validates the format of the URL (e.g., must start with http:// or https:// and include a valid domain)
 3. **Existence Check:** Mock a server call to check if the URL exists and whether it is a file or a folder
-    -  **Asynchronous:** The server call must be asynchronous
-    - **Throttling:** Throttle the existence check to avoid excessive server requests while typing
+   - **Asynchronous:** The server call must be asynchronous
+   - **Throttling:** Throttle the existence check to avoid excessive server requests while typing

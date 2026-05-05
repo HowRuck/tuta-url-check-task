@@ -1,10 +1,10 @@
 module.exports = {
-  content: ["./src/**/*.{html,js,ts,jsx,tsx,css}"],
-  darkMode: false,
-  theme: {
-    extend: {},
-  },
-  variants: {
-    extend: {},
-  },
+	content: ["./src/**/*.{html,js,ts,jsx,tsx,css}"],
+	darkMode: false,
+	theme: {
+		extend: {},
+	},
+	variants: {
+		extend: {},
+	},
 };
