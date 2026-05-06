@@ -42,7 +42,7 @@ Open http://localhost:3000
 
 ### Technologies
 
-- **Frontend:** Mithril.js (chosen for consistency with Tuta's open-source stack)
+- **Frontend:** Mithril.js
 - **Styling:** TailwindCSS + DaisyUI
 - **Backend:** FastAPI
 
