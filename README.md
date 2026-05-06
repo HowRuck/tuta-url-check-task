@@ -10,7 +10,7 @@
 
   <br />
 
-_A simple web application to validate URLs and check their existence using a lightweight frontend and backend setup_
+_A simple web application to validate URLs and check their existence_
 
 </div>
 
@@ -58,3 +58,8 @@ Open http://localhost:3000
 3. **Existence Check:** Mock a server call to check if the URL exists and whether it is a file or a folder
    - **Asynchronous:** The server call must be asynchronous
    - **Throttling:** Throttle the existence check to avoid excessive server requests while typing
+
+---
+<p align="center">
+  🐄
+</p>
