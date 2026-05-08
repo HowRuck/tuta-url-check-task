@@ -47,7 +47,7 @@ The application performs strict local format validation followed by a mocked asy
 During this remote check, the resource type is inferred from the URL path: 
   - URLs ending in a slash (`/`), having an empty path, or lacking a file extension in the final segment are classified as **Directories**
   - URLs where the final path segment contains a valid file extension (e.g., `image.png`) are classified as **Files**
-  - If the URL fails the simulated network check or does not exist, it resolves to an **Unknown** state
+  - If the URL fails the simulated network check or does not exist, it resolves to an **Unknown / Failed** state
 
 ### Requirements
 
