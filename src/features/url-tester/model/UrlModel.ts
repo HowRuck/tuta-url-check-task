@@ -1,11 +1,13 @@
 import validator from "validator";
+import { UrlCheckService } from "../services/UrlCheckService";
 
 /**
  * Represents the type of a URL (directory or file)
  */
 export enum UrlFileType {
 	Directory = "DIR",
-	File = "FILE",
+    File = "FILE",
+	Unknown = "UNKNOWN"
 }
 
 /**
@@ -21,7 +23,9 @@ export type RemoteCheckResponse = {
  * Represents a URL and its validation state
  */
 export class UrlModel {
-	public url: string = "";
+    public url: string = "";
+    public parsedUrl: URL | null = null;
+
 	public remote: RemoteCheckResponse | null = null;
 	public error: string = "";
 
@@ -60,12 +64,13 @@ export class UrlModel {
 		this.isLocalValid = false;
 		this.isRemoteValid = false;
 
-		// Validate the local URL
+		// Validate the URL locally (URL.canParse also possible here)
 		if (!validator.isURL(this.url, { require_protocol: true })) {
 			this.error = "Invalid URL format";
 			return;
 		}
 
+        this.parsedUrl = new URL(this.url);
 		this.error = "";
 		this.isLocalValid = true;
 	}
@@ -74,28 +79,21 @@ export class UrlModel {
 	 * Validates the remote URL
 	 */
 	public async syncRemoteValidation(abortSignal: AbortSignal) {
-		if (!this.isLocalValid) return;
+		if (!this.isLocalValid || !this.parsedUrl) return;
 
 		// Reset remote validation state
 		this.remote = null;
 		this.isRemoteValid = false;
 
 		try {
-			const resp = await fetch("http://localhost:3001/check", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ url: this.url }),
-				signal: abortSignal,
-			});
+			const resp = await UrlCheckService.checkUrl(this.parsedUrl, abortSignal)
 
-			if (!resp.ok) {
+			if (resp.status != 200) {
 				this.error = `Remote Check Failed (${resp.status})`;
 				return;
 			}
 
-			// Update remote validation state and error
-			const data = await resp.json();
-			this.remote = data as RemoteCheckResponse;
+            this.remote = resp;
 			this.error = "";
 			this.isRemoteValid = true;
 		} catch (err: any) {
