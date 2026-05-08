@@ -6,8 +6,8 @@ import { UrlCheckService } from "../services/UrlCheckService";
  */
 export enum UrlFileType {
 	Directory = "DIR",
-    File = "FILE",
-	Unknown = "UNKNOWN"
+	File = "FILE",
+	Unknown = "UNKNOWN",
 }
 
 /**
@@ -23,8 +23,8 @@ export type RemoteCheckResponse = {
  * Represents a URL and its validation state
  */
 export class UrlModel {
-    public url: string = "";
-    public parsedUrl: URL | null = null;
+	public url: string = "";
+	public parsedUrl: URL | null = null;
 
 	public remote: RemoteCheckResponse | null = null;
 	public error: string = "";
@@ -70,7 +70,7 @@ export class UrlModel {
 			return;
 		}
 
-        this.parsedUrl = new URL(this.url);
+		this.parsedUrl = new URL(this.url);
 		this.error = "";
 		this.isLocalValid = true;
 	}
@@ -86,14 +86,14 @@ export class UrlModel {
 		this.isRemoteValid = false;
 
 		try {
-			const resp = await UrlCheckService.checkUrl(this.parsedUrl, abortSignal)
+			const resp = await UrlCheckService.checkUrl(this.parsedUrl, abortSignal);
 
 			if (resp.status != 200) {
 				this.error = `Remote Check Failed (${resp.status})`;
 				return;
 			}
 
-            this.remote = resp;
+			this.remote = resp;
 			this.error = "";
 			this.isRemoteValid = true;
 		} catch (err: any) {
