@@ -1,28 +1,21 @@
 @reference "#app.css";
 
 .url-form {
-	@apply w-xl;
-}
-
-.url-input-label {
-	@apply input validator;
-}
-
-.url-input {
-	@apply grow;
+    @apply w-xl;
 }
 
 .url-loading-spinner {
-	@apply loading loading-spinner loading-xs w-[1em] h-[1em] shrink-0;
+    @apply loading loading-spinner loading-xs w-[1em] h-[1em] shrink-0;
 }
 
 .message-container {
-	@apply min-h-5 mt-4;
-	@apply transition-opacity duration-200 ease-in-out;
+    @apply min-h-5 mt-4;
+    @apply transition-opacity duration-200 ease-in-out;
 }
 
+.text-info,
 .text-error,
 .text-success {
-	@apply text-sm;
-	@apply italic;
+    @apply text-sm;
+    @apply italic;
 }

@@ -1,6 +1,6 @@
 import m from "mithril";
 import "./UrlInputForm.css";
-import { UrlValidationController } from "../controller/UrlValidationController";
+import { UrlValidationController, InputState } from "../controller/UrlValidationController";
 
 /**
  * Link icon SVG component
@@ -41,8 +41,35 @@ const LoadingSpinnerIcon = m("span.url-loading-spinner");
 export default function UrlInputForm() {
 	const urlCtl = new UrlValidationController();
 
+	function getUrlInputClass(state: InputState): string {
+		switch (state) {
+			case InputState.VALIDATING:
+				return "input-info";
+			case InputState.ERROR:
+				return "input-error";
+			case InputState.SUCCESS:
+				return "input-success";
+			default:
+				return "";
+		}
+	}
+
+	function getValidationInfo(state: InputState): m.Vnode | null {
+		switch (state) {
+			case InputState.ERROR:
+				return m("p.text-error", urlCtl.error);
+			case InputState.SUCCESS:
+				return m("p.text-success", `URL looks good! Type: ${urlCtl.fileType}`);
+			default:
+				return null;
+		}
+	}
+
 	return {
 		view: () => {
+			const urlInputClass = getUrlInputClass(urlCtl.state);
+			const validationMessage = getValidationInfo(urlCtl.state);
+
 			return m(
 				"form.url-form",
 				{
@@ -52,25 +79,16 @@ export default function UrlInputForm() {
 					},
 				},
 				[
-					m("label.url-input-label", [
-						urlCtl.isRemoteValidating ? LoadingSpinnerIcon : LinkIcon,
-						m("input.url-input", {
+					m("label.input", { class: urlInputClass }, [
+						urlCtl.state === InputState.VALIDATING ? LoadingSpinnerIcon : LinkIcon,
+						m("input", {
 							type: "url",
 							placeholder: "https://example.com",
-
 							value: urlCtl.url,
-
 							oninput: (e: InputEvent) => urlCtl.handleinput(e),
 						}),
 					]),
-
-					m("div.message-container", [
-						urlCtl.error
-							? m("p.text-error", urlCtl.error)
-							: urlCtl.isValid && !urlCtl.isRemoteValidating
-								? m("p.text-success", `URL looks good! Type: ${urlCtl.fileType}`)
-								: null,
-					]),
+					m("div.message-container", [validationMessage]),
 				],
 			);
 		},
