@@ -124,14 +124,15 @@ export class UrlValidationController {
 
 			if (signal.aborted) return;
 
-			target.setCustomValidity(this.model.error || "");
 			this.state = this.model.error ? InputState.ERROR : InputState.SUCCESS;
 		} catch (err: any) {
 			if (err.name === "AbortError") return;
 
 			console.error("Remote check failed:", err);
 			this.state = InputState.ERROR;
-		} finally {
+        } finally {
+            target.setCustomValidity(this.model.error || "");
+
 			m.redraw();
 		}
 	}
