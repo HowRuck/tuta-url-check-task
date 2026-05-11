@@ -2,6 +2,17 @@ import m from "mithril";
 import { UrlModel } from "../model/UrlModel";
 
 /**
+ * Enum representing the possible states of the input field
+ */
+export enum InputState {
+	IDLE, // Initial state
+	TYPING, // User is typing / waiting for debounce
+	ERROR, // Input is invalid
+	VALIDATING, // Remote validation is in progress
+	SUCCESS, // Input is valid and remote validation succeeded
+}
+
+/**
  * Controller for URL validation, handling local and remote validation
  */
 export class UrlValidationController {
@@ -13,7 +24,9 @@ export class UrlValidationController {
 	private readonly THROTTLE_MS = 2000;
 	private readonly DEBOUNCE_MS = 400;
 
-	public isRemoteValidating = false;
+	public state: InputState = InputState.IDLE;
+
+	// Proxy Methods for model
 
 	public get url() {
 		return this.model.url;
@@ -24,25 +37,52 @@ export class UrlValidationController {
 	public get isValid() {
 		return this.model.isValid;
 	}
+
 	public get fileType() {
 		return this.model.type;
 	}
 
 	/**
+	 * Updates the validation state for the given target
+	 *
+	 * **WARNING:** This method cancels any pending remote validation and resets the debounce timer
+	 */
+	private updateValidationState(
+		target: HTMLInputElement,
+		validity: string | null,
+		state: InputState,
+	) {
+		clearTimeout(this.debounceTimer);
+		this.debounceTimer = undefined;
+
+		this.abortCtl?.abort();
+		this.state = state;
+		target.setCustomValidity(validity || "");
+
+		m.redraw();
+	}
+
+	/**
 	 * Handles input events, validating local URL and running remote check if valid
 	 */
-	public async handleinput(e: InputEvent) {
+	public async handleInput(e: InputEvent): Promise<void> {
 		const target = e.target as HTMLInputElement;
-		const value = target.value;
+		const value = target.value.trim();
 
-		// Exit early if local URL check fails
 		this.model.syncLocalValidation(value);
-		if (!this.model.isLocalValid) {
-			target.setCustomValidity(this.model.error || "");
+
+		if (!value) {
+			this.updateValidationState(target, null, InputState.IDLE);
 			return;
 		}
 
-		this.scheduleRemoteCheck(target);
+		if (this.model.isLocalValid) {
+			this.state = InputState.TYPING;
+			this.scheduleRemoteCheck(target);
+		} else {
+			this.updateValidationState(target, this.model.error, InputState.ERROR);
+		}
+
 		m.redraw();
 	}
 
@@ -71,24 +111,27 @@ export class UrlValidationController {
 	 * Runs the remote check for the given target
 	 */
 	private async executeRemoteCheck(target: HTMLInputElement) {
-		// Cancel pending requests to prevent race conditions
 		this.abortCtl?.abort();
 		this.abortCtl = new AbortController();
+		const signal = this.abortCtl.signal;
 
 		this.lastRunTime = Date.now();
-		this.isRemoteValidating = true;
+		this.state = InputState.VALIDATING;
 		m.redraw();
 
 		try {
-			await this.model.syncRemoteValidation(this.abortCtl.signal);
+			await this.model.syncRemoteValidation(signal);
+
+			if (signal.aborted) return;
+
+			this.state = this.model.error ? InputState.ERROR : InputState.SUCCESS;
 		} catch (err: any) {
 			if (err.name === "AbortError") return;
 
 			console.error("Remote check failed:", err);
+			this.state = InputState.ERROR;
 		} finally {
-			// Update input validity and clear loading state
 			target.setCustomValidity(this.model.error || "");
-			this.isRemoteValidating = false;
 
 			m.redraw();
 		}

@@ -4,14 +4,6 @@
 	@apply w-xl;
 }
 
-.url-input-label {
-	@apply input validator;
-}
-
-.url-input {
-	@apply grow;
-}
-
 .url-loading-spinner {
 	@apply loading loading-spinner loading-xs w-[1em] h-[1em] shrink-0;
 }
@@ -21,6 +13,7 @@
 	@apply transition-opacity duration-200 ease-in-out;
 }
 
+.text-info,
 .text-error,
 .text-success {
 	@apply text-sm;
