@@ -54,23 +54,32 @@ export class UrlValidationController {
 		const target = e.target as HTMLInputElement;
 		const value = target.value;
 
-		// Exit early if local URL check fails
-		this.model.syncLocalValidation(value);
-		if (!this.model.isLocalValid) {
-			this.clearDebounceTimer();
-			this.abortCtl?.abort();
-
-			target.setCustomValidity(this.model.error || "");
-			this.state = InputState.ERROR;
-
-			m.redraw();
+		if (!this.validateLocal(value, target)) {
 			return;
 		}
 
 		this.state = InputState.TYPING;
 		this.scheduleRemoteCheck(target);
 		m.redraw();
-	}
+    }
+
+    private validateLocal(value: string, input: HTMLInputElement): boolean {
+    	this.model.syncLocalValidation(value);
+
+    	if (this.model.isLocalValid) {
+    		return true;
+    	}
+
+    	this.clearDebounceTimer();
+    	this.abortCtl?.abort();
+
+    	input.setCustomValidity(this.model.error || "");
+    	this.state = InputState.ERROR;
+
+    	m.redraw();
+
+    	return false;
+    }
 
 	/**
 	 * Schedules a remote check for the given target, applying throttle and debounce logic
