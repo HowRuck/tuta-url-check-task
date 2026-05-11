@@ -1,23 +1,9 @@
 import validator from "validator";
-import { UrlCheckService } from "../services/UrlCheckService";
+import { FetchMockService } from "../services/FetchMockService";
+import { UrlFileType, type RemoteCheckResponse } from "./UrlTypes";
 
-/**
- * Represents the type of a URL (directory or file)
- */
-export enum UrlFileType {
-	Directory = "DIR",
-	File = "FILE",
-	Unknown = "UNKNOWN",
-}
-
-/**
- * Represents a remote check response
- */
-export type RemoteCheckResponse = {
-	url: string;
-	status: number;
-	type: UrlFileType;
-};
+export type { RemoteCheckResponse };
+export { UrlFileType };
 
 /**
  * Represents a URL and its validation state
@@ -86,7 +72,7 @@ export class UrlModel {
 		this.isRemoteValid = false;
 
 		try {
-			const resp = await UrlCheckService.checkUrl(this.parsedUrl, abortSignal);
+			const resp = await FetchMockService.checkUrl(this.parsedUrl, abortSignal);
 
 			if (resp.status != 200) {
 				this.error = `Remote Check Failed (${resp.status})`;
