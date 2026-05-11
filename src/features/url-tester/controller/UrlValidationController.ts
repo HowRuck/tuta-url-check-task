@@ -5,11 +5,11 @@ import { UrlModel } from "../model/UrlModel";
  * Enum representing the possible states of the input field
  */
 export enum InputState {
-    IDLE,       // Initial state
-	TYPING,     // User is typing / waiting for debounce
-	ERROR,      // Input is invalid
+	IDLE, // Initial state
+	TYPING, // User is typing / waiting for debounce
+	ERROR, // Input is invalid
 	VALIDATING, // Remote validation is in progress
-	SUCCESS,    // Input is valid and remote validation succeeded
+	SUCCESS, // Input is valid and remote validation succeeded
 }
 
 /**
@@ -57,7 +57,7 @@ export class UrlValidationController {
 		// Exit early if local URL check fails
 		this.model.syncLocalValidation(value);
 		if (!this.model.isLocalValid) {
-		    this.clearDebounceTimer();
+			this.clearDebounceTimer();
 			this.abortCtl?.abort();
 
 			target.setCustomValidity(this.model.error || "");
