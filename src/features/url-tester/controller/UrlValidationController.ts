@@ -66,7 +66,7 @@ export class UrlValidationController {
 
 		this.model.syncLocalValidation(value);
 
-		if (!value) {
+		if (!this.model.url) {
 			this.updateValidationState(InputState.IDLE);
 			return;
 		}
