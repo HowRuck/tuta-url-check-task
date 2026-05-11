@@ -47,9 +47,7 @@ export class UrlValidationController {
 	 *
 	 * **WARNING:** This method cancels any pending remote validation and resets the debounce timer
 	 */
-	private updateValidationState(
-		state: InputState,
-	) {
+	private updateValidationState(state: InputState) {
 		clearTimeout(this.debounceTimer);
 		this.debounceTimer = undefined;
 
@@ -66,7 +64,7 @@ export class UrlValidationController {
 		const target = e.target as HTMLInputElement;
 		const value = target.value.trim();
 
-        this.model.syncLocalValidation(value);
+		this.model.syncLocalValidation(value);
 
 		if (!value) {
 			this.updateValidationState(InputState.IDLE);
