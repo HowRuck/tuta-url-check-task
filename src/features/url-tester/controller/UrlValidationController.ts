@@ -123,7 +123,7 @@ export class UrlValidationController {
 		} catch (err: any) {
 			if (err.name === "AbortError") return;
 
-			console.error("Remote icheck failed:", err);
+			console.error("Remote check failed:", err);
 			this.state = InputState.ERROR;
 		} finally {
 			m.redraw();
