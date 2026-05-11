@@ -47,17 +47,12 @@ export class UrlValidationController {
 	 *
 	 * **WARNING:** This method cancels any pending remote validation and resets the debounce timer
 	 */
-	private updateValidationState(
-		target: HTMLInputElement,
-		validity: string | null,
-		state: InputState,
-	) {
+	private updateValidationState(state: InputState) {
 		clearTimeout(this.debounceTimer);
 		this.debounceTimer = undefined;
 
 		this.abortCtl?.abort();
 		this.state = state;
-		target.setCustomValidity(validity || "");
 
 		m.redraw();
 	}
@@ -71,16 +66,16 @@ export class UrlValidationController {
 
 		this.model.syncLocalValidation(value);
 
-		if (!value) {
-			this.updateValidationState(target, null, InputState.IDLE);
+		if (!this.model.url) {
+			this.updateValidationState(InputState.IDLE);
 			return;
 		}
 
 		if (this.model.isLocalValid) {
 			this.state = InputState.TYPING;
-			this.scheduleRemoteCheck(target);
+			this.scheduleRemoteCheck();
 		} else {
-			this.updateValidationState(target, this.model.error, InputState.ERROR);
+			this.updateValidationState(InputState.ERROR);
 		}
 
 		m.redraw();
@@ -89,20 +84,20 @@ export class UrlValidationController {
 	/**
 	 * Schedules a remote check for the given target, applying throttle and debounce logic
 	 */
-	private scheduleRemoteCheck(target: HTMLInputElement) {
+	private scheduleRemoteCheck() {
 		const now = Date.now();
 		const timeSinceLastRun = now - this.lastRunTime;
 
 		// Leading Edge (Throttle)
 		if (!this.debounceTimer && timeSinceLastRun >= this.THROTTLE_MS) {
-			this.executeRemoteCheck(target);
+			this.executeRemoteCheck();
 			return;
 		}
 
 		// Trailing Edge (Debounce)
 		clearTimeout(this.debounceTimer);
 		this.debounceTimer = window.setTimeout(() => {
-			this.executeRemoteCheck(target);
+			this.executeRemoteCheck();
 			this.debounceTimer = undefined;
 		}, this.DEBOUNCE_MS);
 	}
@@ -110,7 +105,7 @@ export class UrlValidationController {
 	/**
 	 * Runs the remote check for the given target
 	 */
-	private async executeRemoteCheck(target: HTMLInputElement) {
+	private async executeRemoteCheck() {
 		this.abortCtl?.abort();
 		this.abortCtl = new AbortController();
 		const signal = this.abortCtl.signal;
@@ -131,8 +126,6 @@ export class UrlValidationController {
 			console.error("Remote check failed:", err);
 			this.state = InputState.ERROR;
 		} finally {
-			target.setCustomValidity(this.model.error || "");
-
 			m.redraw();
 		}
 	}

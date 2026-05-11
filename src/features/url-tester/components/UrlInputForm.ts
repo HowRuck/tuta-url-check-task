@@ -86,6 +86,14 @@ export default function UrlInputForm() {
 							placeholder: "https://example.com",
 							value: urlCtl.url,
 							oninput: (e: InputEvent) => urlCtl.handleInput(e),
+							onupdate: (vnode) => {
+								const dom = vnode.dom as HTMLInputElement;
+								const currentError = urlCtl.error || "";
+
+								if (dom.validationMessage !== currentError) {
+									dom.setCustomValidity(currentError);
+								}
+							},
 						}),
 					]),
 					m("div.message-container", [validationMessage]),
