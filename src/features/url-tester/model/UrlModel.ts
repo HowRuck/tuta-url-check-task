@@ -46,9 +46,12 @@ export class UrlModel {
 		this.url = inputUrl;
 
 		// Reset state
-		this.remote = null;
+        this.remote = null;
+        this.error = "";
 		this.isLocalValid = false;
-		this.isRemoteValid = false;
+        this.isRemoteValid = false;
+
+        if (!inputUrl) return;
 
 		// Validate the URL locally (URL.canParse also possible here)
 		if (!validator.isURL(this.url, { require_protocol: true })) {
@@ -57,7 +60,6 @@ export class UrlModel {
 		}
 
 		this.parsedUrl = new URL(this.url);
-		this.error = "";
 		this.isLocalValid = true;
 	}
 
