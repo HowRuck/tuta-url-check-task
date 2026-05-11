@@ -48,8 +48,6 @@ export class UrlValidationController {
 	 * **WARNING:** This method cancels any pending remote validation and resets the debounce timer
 	 */
 	private updateValidationState(
-		target: HTMLInputElement,
-		validity: string | null,
 		state: InputState,
 	) {
 		clearTimeout(this.debounceTimer);
@@ -57,7 +55,6 @@ export class UrlValidationController {
 
 		this.abortCtl?.abort();
 		this.state = state;
-		target.setCustomValidity(validity || "");
 
 		m.redraw();
 	}
@@ -69,10 +66,10 @@ export class UrlValidationController {
 		const target = e.target as HTMLInputElement;
 		const value = target.value.trim();
 
-		this.model.syncLocalValidation(value);
+        this.model.syncLocalValidation(value);
 
 		if (!value) {
-			this.updateValidationState(target, null, InputState.IDLE);
+			this.updateValidationState(InputState.IDLE);
 			return;
 		}
 
@@ -80,7 +77,7 @@ export class UrlValidationController {
 			this.state = InputState.TYPING;
 			this.scheduleRemoteCheck(target);
 		} else {
-			this.updateValidationState(target, this.model.error, InputState.ERROR);
+			this.updateValidationState(InputState.ERROR);
 		}
 
 		m.redraw();
@@ -128,11 +125,9 @@ export class UrlValidationController {
 		} catch (err: any) {
 			if (err.name === "AbortError") return;
 
-			console.error("Remote check failed:", err);
+			console.error("Remote icheck failed:", err);
 			this.state = InputState.ERROR;
 		} finally {
-			target.setCustomValidity(this.model.error || "");
-
 			m.redraw();
 		}
 	}
