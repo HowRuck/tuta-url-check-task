@@ -42,32 +42,37 @@ export class UrlValidationController {
 		return this.model.type;
 	}
 
-	private resetAsyncValidation(target: HTMLInputElement, validity: string | null, state: InputState) {
+	/**
+	 * Updates the validation state for the given target
+	 *
+	 * **WARNING:** This method cancels any pending remote validation and resets the debounce timer
+	 */
+	private updateValidationState(
+		target: HTMLInputElement,
+		validity: string | null,
+		state: InputState,
+	) {
 		clearTimeout(this.debounceTimer);
-        this.debounceTimer = undefined;
+		this.debounceTimer = undefined;
 
 		this.abortCtl?.abort();
 		this.state = state;
-        target.setCustomValidity(validity || "");
+		target.setCustomValidity(validity || "");
 
-        m.redraw()
+		m.redraw();
 	}
 
 	/**
 	 * Handles input events, validating local URL and running remote check if valid
 	 */
-    public async handleInput(e: InputEvent): Promise<void> {
+	public async handleInput(e: InputEvent): Promise<void> {
 		const target = e.target as HTMLInputElement;
-        const value = target.value.trim();
+		const value = target.value.trim();
 
-        this.model.syncLocalValidation(value)
+		this.model.syncLocalValidation(value);
 
 		if (!value) {
-			this.resetAsyncValidation(
-				target,
-				null,
-				InputState.IDLE
-			);
+			this.updateValidationState(target, null, InputState.IDLE);
 			return;
 		}
 
@@ -75,14 +80,10 @@ export class UrlValidationController {
 			this.state = InputState.TYPING;
 			this.scheduleRemoteCheck(target);
 		} else {
-			this.resetAsyncValidation(
-				target,
-				this.model.error,
-				InputState.ERROR
-			);
-        }
+			this.updateValidationState(target, this.model.error, InputState.ERROR);
+		}
 
-        m.redraw()
+		m.redraw();
 	}
 
 	/**
