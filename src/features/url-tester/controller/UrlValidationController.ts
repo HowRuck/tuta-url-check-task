@@ -73,7 +73,7 @@ export class UrlValidationController {
 
 		if (this.model.isLocalValid) {
 			this.state = InputState.TYPING;
-			this.scheduleRemoteCheck(target);
+			this.scheduleRemoteCheck();
 		} else {
 			this.updateValidationState(InputState.ERROR);
 		}
@@ -84,20 +84,20 @@ export class UrlValidationController {
 	/**
 	 * Schedules a remote check for the given target, applying throttle and debounce logic
 	 */
-	private scheduleRemoteCheck(target: HTMLInputElement) {
+	private scheduleRemoteCheck() {
 		const now = Date.now();
 		const timeSinceLastRun = now - this.lastRunTime;
 
 		// Leading Edge (Throttle)
 		if (!this.debounceTimer && timeSinceLastRun >= this.THROTTLE_MS) {
-			this.executeRemoteCheck(target);
+			this.executeRemoteCheck();
 			return;
 		}
 
 		// Trailing Edge (Debounce)
 		clearTimeout(this.debounceTimer);
 		this.debounceTimer = window.setTimeout(() => {
-			this.executeRemoteCheck(target);
+			this.executeRemoteCheck();
 			this.debounceTimer = undefined;
 		}, this.DEBOUNCE_MS);
 	}
@@ -105,7 +105,7 @@ export class UrlValidationController {
 	/**
 	 * Runs the remote check for the given target
 	 */
-	private async executeRemoteCheck(target: HTMLInputElement) {
+	private async executeRemoteCheck() {
 		this.abortCtl?.abort();
 		this.abortCtl = new AbortController();
 		const signal = this.abortCtl.signal;
