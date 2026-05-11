@@ -12,14 +12,6 @@ _A simple web application to validate URLs and check their existence_
 
 </div>
 
-<br />
-
-> ⚠️ There is an issue with ?DaisyUI? where form validation styles are not applied immediately while typing
->
-> - **Workaround:** Submit the form, or click outside the input field and then back into it to trigger the correct styling (also working and reacting properly afterward)
-> - This issue only affects input field styling, validation messages are displayed correctly
-> - The same behavior can be observed in the official DaisyUI example: https://daisyui.com/components/input/
-
 ### Run
 
 ```bash
