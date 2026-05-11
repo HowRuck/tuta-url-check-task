@@ -13,7 +13,7 @@ export class FetchMockService {
 		signal?.throwIfAborted();
 
 		// Simulate network latency
-		const simulatedLatencyMs = Math.random() * 400 + 100;
+		const simulatedLatencyMs = Math.random() * 1000 + 100;
 		await AbortableDelayService.delay(simulatedLatencyMs, signal);
 
 		// Simulate server response
