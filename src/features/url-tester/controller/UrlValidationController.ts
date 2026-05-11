@@ -42,44 +42,48 @@ export class UrlValidationController {
 		return this.model.type;
 	}
 
-	private clearDebounceTimer() {
+	private resetAsyncValidation(target: HTMLInputElement, validity: string | null, state: InputState) {
 		clearTimeout(this.debounceTimer);
-		this.debounceTimer = undefined;
+        this.debounceTimer = undefined;
+
+		this.abortCtl?.abort();
+		this.state = state;
+        target.setCustomValidity(validity || "");
+
+        m.redraw()
 	}
 
 	/**
 	 * Handles input events, validating local URL and running remote check if valid
 	 */
-	public async handleinput(e: InputEvent) {
+    public async handleInput(e: InputEvent): Promise<void> {
 		const target = e.target as HTMLInputElement;
-		const value = target.value;
+        const value = target.value.trim();
 
-		if (!this.validateLocal(value, target)) {
+        this.model.syncLocalValidation(value)
+
+		if (!value) {
+			this.resetAsyncValidation(
+				target,
+				null,
+				InputState.IDLE
+			);
 			return;
 		}
 
-		this.state = InputState.TYPING;
-		this.scheduleRemoteCheck(target);
-		m.redraw();
-    }
+		if (this.model.isLocalValid) {
+			this.state = InputState.TYPING;
+			this.scheduleRemoteCheck(target);
+		} else {
+			this.resetAsyncValidation(
+				target,
+				this.model.error,
+				InputState.ERROR
+			);
+        }
 
-    private validateLocal(value: string, input: HTMLInputElement): boolean {
-    	this.model.syncLocalValidation(value);
-
-    	if (this.model.isLocalValid) {
-    		return true;
-    	}
-
-    	this.clearDebounceTimer();
-    	this.abortCtl?.abort();
-
-    	input.setCustomValidity(this.model.error || "");
-    	this.state = InputState.ERROR;
-
-    	m.redraw();
-
-    	return false;
-    }
+        m.redraw()
+	}
 
 	/**
 	 * Schedules a remote check for the given target, applying throttle and debounce logic

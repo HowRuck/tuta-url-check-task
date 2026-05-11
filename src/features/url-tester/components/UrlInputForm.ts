@@ -85,7 +85,7 @@ export default function UrlInputForm() {
 							type: "url",
 							placeholder: "https://example.com",
 							value: urlCtl.url,
-							oninput: (e: InputEvent) => urlCtl.handleinput(e),
+							oninput: (e: InputEvent) => urlCtl.handleInput(e),
 						}),
 					]),
 					m("div.message-container", [validationMessage]),
