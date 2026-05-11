@@ -1,10 +1,7 @@
 import { UrlFileType, type RemoteCheckResponse } from "../model/UrlTypes";
 
 /**
- * Mocked server-side URL checker.
- *
- * This service intentionally has no abort handling because the server mock
- * represents work that has already reached the server and must run to completion.
+ * Mocked server-side URL checker
  */
 export class ServerMock {
 	public static checkUrl(url: URL): RemoteCheckResponse {
